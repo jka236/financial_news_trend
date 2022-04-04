@@ -1,0 +1,93 @@
+version: '3.1'
+
+services:
+  # zookeeper:
+  #   image: 'bitnami/zookeeper:latest'
+  #   ports:
+  #     - '2181:2181'
+  #   environment:
+  #     - ALLOW_ANONYMOUS_LOGIN=yes
+
+  # kafka:
+  #   image: 'bitnami/kafka:latest'
+  #   ports:
+  #     - '9092:9092'
+  #   depends_on:
+  #     - zookeeper
+  #   environment:
+  #     - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+  #     - ALLOW_PLAINTEXT_LISTENER=yes
+  #     - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+  #     - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+  #     - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+  #     - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+  #     - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      
+  # connector:
+  #     container_name: connector
+  #     build: ./connect
+  #     ports:
+  #         - 8083:8083
+  #     depends_on:
+  #         - kafka
+  #         - schema-reg
+  #     environment:
+  #         - CONNECT_REST_ADVERTISED_HOST_NAME=${CONNECT_REST_ADVERTISED_HOST_NAME}
+  #         - CONNECT_SCHEMA_REGISTRY_URL=${SCHEMA_REGISTRY_URL}
+  #         - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=${SCHEMA_REGISTRY_URL}
+  #         - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=${SCHEMA_REGISTRY_URL}
+  #         - CONNECT_BOOTSTRAP_SERVERS=${CONNECT_BOOTSTRAP_SERVERS} 
+  #         - CONNECT_REST_PORT=8083
+  #         - CONNECT_GROUP_ID=connect-cluster-group
+  #         - CONNECT_CONFIG_STORAGE_TOPIC=docker-connect-configs
+  #         - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1
+  #         - CONNECT_OFFSET_FLUSH_INTERVAL_MS=10000
+  #         - CONNECT_OFFSET_STORAGE_TOPIC=docker-connect-offsets
+  #         - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1
+  #         - CONNECT_STATUS_STORAGE_TOPIC=docker-connect-status
+  #         - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1
+  #         - CONNECT_ZOOKEEPER_CONNECT=zookeeper:2181
+  #         - CONNECT_PLUGIN_PATH=/usr/share/java,/usr/share/confluent-hub-components
+  #         - CONNECT_AUTO_CREATE_TOPICS_ENABLE=true
+  #         - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+  #         - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+
+  # schema-reg:
+  #     container_name: schema-reg
+  #     image: confluentinc/cp-schema-registry:5.3.5
+  #     environment:
+  #         - SCHEMA_REGISTRY_HOST_NAME=${SCHEMA_REGISTRY_HOST_NAME}
+  #         - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=${CONNECT_BOOTSTRAP_SERVERS} 
+  #     depends_on:
+  #         - kafka  
+
+  redis:
+      image: redis:latest
+      ports:
+          - 6379:6379
+      volumes:
+          - ./config/redis.conf:/redis.conf
+      command: [ "redis-server", "/redis.conf" ]
+  # mongo:
+  #     container_name: mongo
+  #     image: mongo:4.2
+  #     command: ["mongod", "--replSet", "rs0", "--auth"]
+  #     environment: 
+  #         - MONGO_ADMIN=${MONGO_ADMIN}
+  #         - RSS_NEWS_USER=${RSS_NEWS}
+  #     ports:
+  #         - 27017:27017
+  #     volumes:
+  #         - ./mongo/init.sh:/usr/local/bin/init.sh
+
+  # mongo-express:
+  #   image: mongo-express
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_URL: "mongodb://rss_news:rss_news@mongo:27017/"
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: example
+  #   depends_on:
+  #     - mongo
