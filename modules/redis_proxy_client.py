@@ -58,7 +58,7 @@ class RedisProxyClient:
     def insert_item_list(self, *value, key=None):
         if key == None:
             key = self.key
-        return self.redis.lpush(key, *value)
+        self.redis.lpush(key, *value)
     
     def sadd_item(self, value, key=None):
         if key == None:
@@ -68,10 +68,7 @@ class RedisProxyClient:
     def sadd_item_list(self, *value, key=None):
         if key == None:
             key = self.key
-        self.redis.sadd(key, *value)
-        
-    def another_sadd(self, *value, key):
-        self.redis.sadd(key, *value)
+        return self.redis.sadd(key, *value)
         
     def get_item(self, key=None):
         if key == None:

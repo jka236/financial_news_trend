@@ -10,8 +10,8 @@ echo -e $(date) "Kafka Connect is ready! Listener HTTP state: " $(curl -s -o /de
 
 
 for connector in *.json; do
-  # curl -s -X "POST" "http://connector:8083/connectors" -H "Content-Type: application/json" -d @$connector
-  curl -X PUT http://localhost:8083/connectors/sink-mongodb-users/config -H "Content-Type: application/json" -d @$connector 
+  curl -s -X "POST" "http://connector:8083/connectors" -H "Content-Type: application/json" -d @$connector
+  # curl -X PUT http://localhost:8083/connectors/sink-mongodb-users/config -H "Content-Type: application/json" -d @$connector 
   sleep 10
 done
 

@@ -1,22 +1,26 @@
-import redis_proxy_client
 from bs4 import BeautifulSoup
 import redis
 from urllib.request import Request, urlopen
 import requests
 from random_headers_list import headers_list
 import random
-import redis_proxy_client
 import re
 import numpy as np
+from custom_operator.get_proxy_list import ProxyPoolOperator
+from redis_proxy_client import RedisProxyClient
 
-def get_proxy(index):
-    client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
-    return client.lpop(index)
+from dag_config import Config as config
+from random_headers_list import headers_list
 
-def scrap_proxy(proxy_list_URL:str, headers_list:list):
+
+def get_proxy(key):
+    client = redis.Redis(host='localhost', port=6378, db=0, decode_responses=True)
+    return client.lrange(key, 0, -1)
+
+def scrap_proxy(proxy_list_URL: str, headers_list: list):
     # Get proxies from free proxy website 
     
-    client = redis.Redis(host='localhost', port=6379, db=0)
+    client = redis.Redis(host='localhost', port=6378, db=0)
     client.flushdb()
     # URL = "https://free-proxy-list.net/"
     soup = soupify(proxy_list_URL, headers_list, "html.parser")
@@ -24,6 +28,7 @@ def scrap_proxy(proxy_list_URL:str, headers_list:list):
     table_body = table.find("tbody")
     proxy_element = table_body.find_all("tr")
     
+    proxy_list = []
     for tr_idx, elem in enumerate(proxy_element):
         for idx, td in enumerate(elem):
             if(idx == 0):
@@ -36,7 +41,9 @@ def scrap_proxy(proxy_list_URL:str, headers_list:list):
             proxy = f'https://{ip}:{port}'
         else:
             proxy = f'http://{ip}:{port}'
-        client.lpush(tr_idx, proxy)
+        proxy_list.append(proxy)
+
+    client.lpush('proxy_list', *proxy_list)
 
 def scrap_title(rss_feed_URL:str, headers_list:list, proxy: str="") -> list:
     soup = soupify(rss_feed_URL, headers_list, "html.parser", proxy)
@@ -69,10 +76,15 @@ def soupify(web_url:str, headers_list:list, parser : str, proxy: str="") -> Beau
 
 # connect to redis
 if __name__ == "__main__":
-    scrap_proxy("https://free-proxy-list.net", headers_list)
-    proxy = get_proxy(1)
-    rss_list = scrap_rss_feed_list("https://blog.feedspot.com/business_news_rss_feeds", headers_list, proxy)
-    print(scrap_title(rss_list[0], headers_list, proxy))
+    client = RedisProxyClient(            
+            redis_config=config.REDIS_CONFIG,
+            key='ips',
+            )
+    client.scrap_proxy("https://free-proxy-list.net", headers_list)
+    proxy = client.get_proxy()
+    print(proxy)
+    # rss_list = scrap_rss_feed_list("https://blog.feedspot.com/business_news_rss_feeds", headers_list, proxy)
+    # print(scrap_title(rss_list[0], headers_list, proxy))
     
     # for rss in rss_list[:1]:
         # print(scrap_title(rss, headers_list, proxy))
