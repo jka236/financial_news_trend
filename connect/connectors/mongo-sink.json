@@ -4,7 +4,7 @@
             "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
             "tasks.max": "1",
             "topics": "rss_feed",
-            "connection.uri": "mongodb://rss_feed:rss_feed@cluster0-shard-00-00.46sfz.mongodb.net:27017,cluster0-shard-00-01.46sfz.mongodb.net:27017,cluster0-shard-00-02.46sfz.mongodb.net:27017/rss_feed?ssl=true&replicaSet=atlas-9f0ueg-shard-0&authSource=admin&retryWrites=true&w=majority",
+            "connection.uri": "mongodb+srv://rss_feed:rss_feed@cluster0.46sfz.mongodb.net/?retryWrites=true&w=majority",
             "database": "rss_feed",
             "collection": "rss_feed",
             "key.converter": "org.apache.kafka.connect.json.JsonConverter",

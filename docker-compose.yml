@@ -23,7 +23,10 @@ x-airflow-common:
                                   redis==3.5.3
                                   requests==2.23.0
                                   flake8==3.8.3
-                                  python-coveralls==2.9.3'
+                                  python-coveralls==2.9.3
+                                  feedparser==6.0.10
+                                  pytz==2022.1
+                                  typing-extensions==4.2.0'
 
     PYTHONPATH: "/opt/airflow/modules"
   volumes:
@@ -41,31 +44,31 @@ x-airflow-common:
       condition: service_healthy
 
 services:
-  node01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
-    container_name: node01
-    environment:
-      - node.name=node01
-      - cluster.name=es-cluster-7
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - es-data01:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
+  # node01:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+  #   container_name: node01
+  #   environment:
+  #     - node.name=node01
+  #     - cluster.name=es-cluster-7
+  #     - discovery.type=single-node
+  #     - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - es-data01:/usr/share/elasticsearch/data
+  #   ports:
+  #     - 9200:9200
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.11.1
-    environment:
-      ELASTICSEARCH_HOSTS: http://node01:9200
-    ports:
-      - 5601:5601
-    depends_on:
-      - node01
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:7.11.1
+  #   environment:
+  #     ELASTICSEARCH_HOSTS: http://node01:9200
+  #   ports:
+  #     - 5601:5601
+  #   depends_on:
+  #     - node01
 
   beam:
     container_name: beam
@@ -95,43 +98,43 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
       
-  # connector:
-  #     container_name: connector
-  #     build: ./connect
-  #     ports:
-  #         - 8083:8083
-  #     depends_on:
-  #         - kafka
-  #         - schema-reg
-  #     environment:
-  #         - CONNECT_REST_ADVERTISED_HOST_NAME=${CONNECT_REST_ADVERTISED_HOST_NAME}
-  #         - CONNECT_SCHEMA_REGISTRY_URL=${SCHEMA_REGISTRY_URL}
-  #         - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=${SCHEMA_REGISTRY_URL}
-  #         - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=${SCHEMA_REGISTRY_URL}
-  #         - CONNECT_BOOTSTRAP_SERVERS=${CONNECT_BOOTSTRAP_SERVERS} 
-  #         - CONNECT_REST_PORT=8083
-  #         - CONNECT_GROUP_ID=connect-cluster-group
-  #         - CONNECT_CONFIG_STORAGE_TOPIC=docker-connect-configs
-  #         - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1
-  #         - CONNECT_OFFSET_FLUSH_INTERVAL_MS=10000
-  #         - CONNECT_OFFSET_STORAGE_TOPIC=docker-connect-offsets
-  #         - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1
-  #         - CONNECT_STATUS_STORAGE_TOPIC=docker-connect-status
-  #         - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1
-  #         - CONNECT_ZOOKEEPER_CONNECT=zookeeper:2181
-  #         - CONNECT_PLUGIN_PATH=/usr/share/java,/usr/share/confluent-hub-components
-  #         - CONNECT_AUTO_CREATE_TOPICS_ENABLE=true
-  #         - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
-  #         - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+  connector:
+      container_name: connector
+      build: ./connect
+      ports:
+          - 8083:8083
+      depends_on:
+          - kafka
+          - schema-reg
+      environment:
+          - CONNECT_REST_ADVERTISED_HOST_NAME=${CONNECT_REST_ADVERTISED_HOST_NAME}
+          - CONNECT_SCHEMA_REGISTRY_URL=${SCHEMA_REGISTRY_URL}
+          - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=${SCHEMA_REGISTRY_URL}
+          - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=${SCHEMA_REGISTRY_URL}
+          - CONNECT_BOOTSTRAP_SERVERS=${CONNECT_BOOTSTRAP_SERVERS} 
+          - CONNECT_REST_PORT=8083
+          - CONNECT_GROUP_ID=connect-cluster-group
+          - CONNECT_CONFIG_STORAGE_TOPIC=docker-connect-configs
+          - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1
+          - CONNECT_OFFSET_FLUSH_INTERVAL_MS=10000
+          - CONNECT_OFFSET_STORAGE_TOPIC=docker-connect-offsets
+          - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1
+          - CONNECT_STATUS_STORAGE_TOPIC=docker-connect-status
+          - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1
+          - CONNECT_ZOOKEEPER_CONNECT=zookeeper:2181
+          - CONNECT_PLUGIN_PATH=/usr/share/java,/usr/share/confluent-hub-components
+          - CONNECT_AUTO_CREATE_TOPICS_ENABLE=true
+          - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+          - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
 
-  # schema-reg:
-  #     container_name: schema-reg
-  #     image: confluentinc/cp-schema-registry:5.3.5
-  #     environment:
-  #         - SCHEMA_REGISTRY_HOST_NAME=${SCHEMA_REGISTRY_HOST_NAME}
-  #         - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=${CONNECT_BOOTSTRAP_SERVERS} 
-  #     depends_on:
-  #         - kafka  
+  schema-reg:
+      container_name: schema-reg
+      image: confluentinc/cp-schema-registry:5.3.5
+      environment:
+          - SCHEMA_REGISTRY_HOST_NAME=${SCHEMA_REGISTRY_HOST_NAME}
+          - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=${CONNECT_BOOTSTRAP_SERVERS} 
+      depends_on:
+          - kafka  
 
   proxy-redis:
       image: redis:latest
@@ -155,6 +158,7 @@ services:
   #     interval: 5s
   #     retries: 5
   #   # restart: always
+
   postgres:
     image: postgres:9.6
     environment:
