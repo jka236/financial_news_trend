@@ -1,11 +1,9 @@
 from random_headers_list import headers_list
-# from soupify import soupify
 from soupify import soupify
 from scrap_rss_feed_list import scrap_rss_feed_list
 
 from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
-
 
 
 class GetRSSListOperator(BaseOperator):

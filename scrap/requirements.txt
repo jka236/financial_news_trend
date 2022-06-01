@@ -14,3 +14,4 @@ soupsieve==2.3.1
 urllib3==1.26.9
 wrapt==1.14.0
 apache-beam==2.37.0
+feedparser==6.0.10

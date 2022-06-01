@@ -13,4 +13,6 @@ requests==2.27.1
 soupsieve==2.3.1
 urllib3==1.26.9
 wrapt==1.14.0
-apache-airflow==1.10.14
+feedparser==6.0.10
+pytz==2022.1
+confluent-kafka==1.8.2

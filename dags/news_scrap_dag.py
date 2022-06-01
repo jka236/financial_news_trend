@@ -72,7 +72,7 @@ def create_dag(dag_id, rss_news, schedule_interval):
 
 for n, rss_feeds in enumerate(config.RSS_FEED_LIST):
     dag_id = f"rss_news_{n}"
-    schedule_interval = "*/5 * * * *"
+    schedule_interval = "0 * * * *"
 
     globals()[dag_id] = create_dag(
         dag_id,
