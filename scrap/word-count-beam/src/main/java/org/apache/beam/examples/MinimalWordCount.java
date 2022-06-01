@@ -41,9 +41,9 @@ public class MinimalWordCount {
         )
                 .apply(Values.<String>create())
                 .apply("ExtractWords", ParDo.of(new DoFn<String, String>() {
-                    String[] omitWords = {"to", "a", "an", "the", "but", "and", "To", "at", 
-                                          "in", "of", "for", "s", "At", "on", "as", "with",
-                                          "The", "B", "A"};
+                    String[] omitWords = {"to", "a", "an", "the", "but", "and", "to", "at", 
+                                          "in", "of", "for", "s", "at", "on", "as", "with",
+                                          "the", "b", "a", "c"};
                     @ProcessElement
                     public void processElement(ProcessContext c) {
                         for (String word : c.element().split(TOKENIZER_PATTERN)) {
@@ -52,16 +52,31 @@ public class MinimalWordCount {
                             }
                         }
                     }
-                }))
-                .apply("FormatToWord", MapElements.via(new SimpleFunction<String, String>(){
-                  @Override
-                  public String apply(String token_word){
-                    return String.format("{\"article_title\": \"%s\"}", token_word);
-                  }}
-                ))
+                })).apply("ExtractPayload",
+                    ParDo.of(new DoFn<String, KV<String, String>>() {
+                        @ProcessElement
+                        public void processElement(ProcessContext c)
+                                throws Exception {
+                            c.output(KV.of(String.format("{\"article_title\": \"test\"}"), String.format("{\"word\": \"%s\"}", c.element())));
+                        }
+                    }))
+                // .apply("FormatToWord", MapElements.via(new SimpleFunction<String, KV<String, String>>(){
+                //   @Override
+                //   public String apply(String token_word){
+                //     // return String.format("{\"article_title\": \"%s\"}", token_word);
+                //     return KV.of("article_title", token_word);
+                //   }}
+                // ))
                 // .apply(TextIO.write().to("wordcounts"));
-                .apply(ElasticsearchIO.write().withConnectionConfiguration(
-                   ElasticsearchIO.ConnectionConfiguration.create(new String[] {"http://localhost:9200"}, "words", "words")));
+                // .apply(ElasticsearchIO.write().withConnectionConfiguration(
+                //    ElasticsearchIO.ConnectionConfiguration.create(new String[] {"http://localhost:9200"}, "words", "words")));
+                .apply(KafkaIO.<String, String>write()
+                .withBootstrapServers("localhost:9093")
+                .withTopic("rss_feed")
+                .withKeySerializer(StringSerializer.class)
+                .withValueSerializer(StringSerializer.class)
+                );
+
         p.run().waitUntilFinish();
         // p.run();
 
