@@ -15,12 +15,14 @@ class GetRSSListOperator(BaseOperator):
             redis_config, 
             redis_key,
             headers_list,
+            idx,
             *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.list_URL = list_URL
         self.redis_config = redis_config
         self.redis_key = redis_key
         self.headers_list = headers_list
-
+        self.idx = idx
+        
     def execute(self, context):
-        scrap_rss_feed_list(self.list_URL, self.headers_list, self.redis_config, self.redis_key)
+        scrap_rss_feed_list(self.list_URL, self.headers_list, self.redis_config, self.redis_key, self.idx)

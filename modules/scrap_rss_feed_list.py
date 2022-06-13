@@ -2,9 +2,10 @@ from soupify import soupify
 from redis_proxy_client import RedisProxyClient
 from random_headers_list import headers_list
 
-def scrap_rss_feed_list(list_URL, headers_list, redis_config, redis_key):
+def scrap_rss_feed_list(list_URL, headers_list, redis_config, redis_key, idx):
     redis = RedisProxyClient(redis_config, redis_key)
     redis.health_check()
+    redis.remove_key(f'rss_feed_list_{idx}')
 
     try:
         proxy = redis.get_item()
@@ -14,7 +15,7 @@ def scrap_rss_feed_list(list_URL, headers_list, redis_config, redis_key):
                                    tag.get('class') == ['ext'])
         rss_feed_list = [rss_feed['href'] for rss_feed in rss_feeds]
         print(rss_feed_list)
-        redis.insert_item_list(*rss_feed_list, key='rss_feed_list')
+        redis.insert_item_list(*rss_feed_list, key=f'rss_feed_list_{idx}')
     except Exception as err:
         print(err)
         redis.lpop_item()

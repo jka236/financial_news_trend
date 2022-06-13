@@ -3,7 +3,6 @@ from textwrap import dedent
 from custom_operator.get_rss_list import GetRSSListOperator
 from custom_operator.get_proxy_list import ProxyPoolOperator
 from custom_operator.get_article_title import GetArticleTitleOperator
-
 from dag_config import Config as config
 from random_headers_list import headers_list
 
@@ -14,15 +13,16 @@ from airflow import DAG
 # Operators; we need this to operate!
 # from airflow.operators.bash import BashOperator
 
-def event_export(id, redis_config, redis_key, headers_list):
+def event_export(id, redis_config, redis_key, headers_list, idx):
     return GetArticleTitleOperator(
                                     task_id=f'getArticleTitles{id}',
                                     redis_config=redis_config,
                                     redis_key=redis_key,
-                                    headers_list=headers_list,                                   
+                                    headers_list=headers_list, 
+                                    idx=idx                                  
                                     )
 
-def create_dag(dag_id, rss_news, schedule_interval):
+def create_dag(dag_id, rss_news, schedule_interval,idx):
     with DAG(
         # These args will get passed on to each operator
         # You can override them on a per-task basis during operator initialization
@@ -39,7 +39,7 @@ def create_dag(dag_id, rss_news, schedule_interval):
         schedule_interval=schedule_interval,
         start_date=datetime(2022, 4, 23),
         catchup=False,
-        is_paused_upon_creation=False
+        is_paused_upon_creation=False,
     ) as dag:
 
         # t1, t2 and t3 are examples of tasks created by instantiating operators
@@ -57,13 +57,15 @@ def create_dag(dag_id, rss_news, schedule_interval):
                                         redis_config=config.REDIS_CONFIG,
                                         redis_key='ips',
                                         headers_list=headers_list, 
+                                        idx=idx
                                         )
         
         get_article_titles = GetArticleTitleOperator(
                                         task_id='getArticleTitles',
                                         redis_config=config.REDIS_CONFIG,
                                         redis_key='ips',
-                                        headers_list=headers_list,                                   
+                                        headers_list=headers_list,      
+                                        idx=idx                             
                                         )
         
         get_proxy_list >> get_rss_list >> get_article_titles 
@@ -77,5 +79,6 @@ for n, rss_feeds in enumerate(config.RSS_FEED_LIST):
     globals()[dag_id] = create_dag(
         dag_id,
         rss_feeds,
-        schedule_interval
+        schedule_interval,
+        n
     )

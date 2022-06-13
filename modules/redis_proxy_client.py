@@ -49,7 +49,10 @@ class RedisProxyClient:
         self.logger.info(f"Overriding existing proxies {proxies}")
         self.redis.delete(key)
         self.redis.lpush(key, *proxies)
-
+    
+    def remove_key(self, key):
+        self.redis.delete(key)
+        
     def insert_item(self, value, key=None):
         if key == None:
             key = self.key
