@@ -7,19 +7,19 @@ This is a data engineering full stack project that consumes the daily news RSS a
 ## How it works
 **Data Scraping**
 
-Airflow DAG is responsible for the execution of Python scraping modules. It runs periodically every X minutes producing micro-batches.
+Airflow DAG is responsible for the execution of Python scraping modules. It runs once a day producing a batch of word counting.
 
-First task updates proxypool. Using proxies in combination with rotating user agents can help get scrapers past most of the anti-scraping measures and prevent being detected as a scraper.
+The first task creates a list of proxies. With the proxy list in combination with rotating user agents, it helps the scraper pass the anti-scraping measures
 
-Second task extracts news from RSS feeds provided in the configuration file, validates the quality and sends data into Kafka topic A. The extraction process is using validated proxies from proxypool.
+The second task extracts RSS feed list and stores them in Redis. 
 
-**Data flow**
+In the last task scrap article titles from the RSS list generated from the second task. Article titles are passed to Kafka topic "article_title" and it is consumed by Apache Beam 
 
-Kafka Connect Mongo Sink consumes data from Kafka topic A and stores news in MongoDB using upsert functionality based on _id field.
-Debezium MongoDB Source tracks a MongoDB replica set for document changes in databases and collections, recording those changes as events in Kafka topic B.
-Kafka Connect Elasticsearch Sink consumes data from Kafka topic B and upserts news in Elasticsearch. Data replicated between topics A and B ensures MongoDB and ElasticSearch synchronization. Command Query Responsibility Segregation (CQRS) pattern allows the use of separate models for updating and reading information.
-Kafka Connect S3-Minio Sink consumes records from Kafka topic B and stores them in MinIO (high-performance object storage) to ensure data persistency.
+**Data Process**
 
-**Data access**
+Apache Beam is in charge of the data process. Ingested article titles are split into a single word and counted in the number of occurrences. Input to Apache Beam is consuming streaming data ingestion whereas it returns a batch of word counting. The window of the streaming is ten minutes which is enough to ingest all daily article titles from Airflow. Apache Beam could be a part of the Airflow task, but it is not included due to the lack of computing power. 
 
-Data gathered by previous steps can be easily accessed in API service using public endpoints.
+**Data Visualization**
+
+Processed data is stored in MongoDB. FastAPi+Next.js stack is fetching data from MongoDB and visualizing with D3.js
+
