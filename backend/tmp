@@ -1,0 +1,29 @@
+@api.post(
+    "/alter_embargo_period",
+    # response=SuspectedMatchesOut,
+    url_name="alter_embargo_period",
+    tags=["Presubmission Matching"],
+)
+def alter_embargo_period(request, embargo: Embargo):
+    error_message = []
+    ad = ArticleData.objects.get(uuid=embargo.uuid)
+
+    try:
+        if embargo.embargo == "":
+            ad.embargo_period = None
+        else:
+            ad.embargo_period = dParser.parse(embargo.embargo).date()
+        ad.save()
+    except Exception as e:
+        print(e)
+        error_message.append(e)
+
+    if error_message != []:
+        raise HttpError(500, error_message)
+
+    return True
+
+
+class Embargo(Schema):
+    embargo: str
+    uuid: str
