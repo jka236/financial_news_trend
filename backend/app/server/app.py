@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from app.server.routes.word import router as WordRouter
+from app.server.routes.noun import router as NounRouter
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 app.include_router(WordRouter, tags=["Word"], prefix="/word")
+app.include_router(NounRouter, tags=["Noun"], prefix="/noun")
 
 origins = [
     "http://localhost",
