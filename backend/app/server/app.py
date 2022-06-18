@@ -7,12 +7,7 @@ app = FastAPI()
 app.include_router(WordRouter, tags=["Word"], prefix="/word")
 app.include_router(NounRouter, tags=["Noun"], prefix="/noun")
 
-origins = [
-    "http://localhost",
-    "http://localhost:8080",
-    "http://localhost:3000",
-    "localhost:3000", 
-]
+origins = ["https://news-trend.vercel.app/"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,6 +16,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.get("/")
 async def root():
