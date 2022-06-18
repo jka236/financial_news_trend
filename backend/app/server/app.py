@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from app.server.routes.word import router as WordRouter
-from app.server.routes.noun import router as NounRouter
+from server.routes.word import router as WordRouter
+from server.routes.noun import router as NounRouter
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()

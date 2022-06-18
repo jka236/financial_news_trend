@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Body
 from fastapi.encoders import jsonable_encoder
 
-from app.server.database import (
+from server.database import (
     retrieve_word,
     add_word
 )
-from app.server.models.word import (
+from server.models.word import (
     ErrorResponseModel,
     ResponseModel,
     WordSchema,
