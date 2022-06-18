@@ -54,7 +54,7 @@ const Submission = ({ words }) => {
 };
 
 export async function getServerSideProps() {
-  const res = await fetch("http://127.0.0.1:8000/noun");
+  const res = await fetch("https://news-trend-tracking.herokuapp.com/noun");
   const words = await res.json();
 
   return {
