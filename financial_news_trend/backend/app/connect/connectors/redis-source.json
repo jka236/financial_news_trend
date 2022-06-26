@@ -1,0 +1,14 @@
+{
+    "name": "redis-source",
+    "config": {
+        "connector.class": "io.github.jaredpetersen.kafkaconnectredis.source.RedisSourceConnector",
+        "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "tasks.max": "1",
+        "topic": "rss_feed",
+        "redis.uri": "redis://proxy-redis:6379",
+        "redis.cluster.enabled": false,
+        "redis.channels": "__key*__:*",
+        "redis.channels.pattern.enabled": true
+    }
+}

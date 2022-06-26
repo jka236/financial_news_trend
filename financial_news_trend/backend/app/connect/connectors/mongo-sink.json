@@ -1,0 +1,15 @@
+{
+      "name": "mongo-sink",
+      "config": {
+            "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+            "tasks.max": "1",
+            "topics": "rss_feed",
+            "connection.uri": "mongodb+srv://rss_feed:rss_feed@cluster0.46sfz.mongodb.net/?retryWrites=true&w=majority",
+            "database": "rss_feed",
+            "collection": "rss_feed",
+            "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+            "key.converter.schemas.enable": false,
+            "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+            "value.converter.schemas.enable": false
+      }
+}
