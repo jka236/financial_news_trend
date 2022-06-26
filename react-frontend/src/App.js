@@ -52,7 +52,7 @@ function App() {
                 Top 10 Most Frequent Keywords From Last 7 Days
               </Typography>
               <Typography variant="h5" component="h1" gutterBottom>
-                From {today} To {weekAgo}
+                From {weekAgo} To {today}
               </Typography>
               {loading && (
                 <div
