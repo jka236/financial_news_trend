@@ -23,5 +23,5 @@ Apache Beam is in charge of the data process. Ingested article titles are split 
 
 **Data Visualization**
 
-Processed data is stored in MongoDB. FastAPi+Next.js stack is fetching data from MongoDB and visualizing with D3.js
+Processed data is stored in MongoDB. FastAPi+React stack is fetching data from MongoDB and visualizing with D3.js
 
