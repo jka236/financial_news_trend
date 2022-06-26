@@ -12,7 +12,7 @@ app.include_router(NounRouter, tags=["Noun"], prefix="/noun")
 app.include_router(AggregatedRouter, tags=["Aggregated"], prefix="/aggregated")
 
 
-origins = ["https://news-trend.vercel.app/", "http://localhost:3000"]
+origins = ["https://prismatic-zabaione-5bbfd9.netlify.app", "http://localhost:3000", "prismatic-zabaione-5bbfd9.netlify.app"]
 
 app.add_middleware(
     CORSMiddleware,
