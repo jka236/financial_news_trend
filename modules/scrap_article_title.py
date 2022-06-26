@@ -26,22 +26,23 @@ def scrap_article_title(headers_list, redis_config, redis_key, idx):
 
     except Exception as err:
         print(err)
-        
-    news_feed = feedparser.parse(rss_feed_URL.decode('ascii'))
-    for entry in news_feed.entries:
-        try:
-            parsed_date = parser.parse(entry.published, tzinfos=tzinfos)
-            parsed_utc = parsed_date.astimezone(UTC).replace(tzinfo=None)
-            now_time = datetime.utcnow()
-            diff = now_time - parsed_utc
-            if diff.days == 0 and entry.title != "object has no attribute 'published'":
-                print(entry.title)
-                p.produce('article_title', entry.title.encode('utf-8'))
-                # producer.send('article_title', str.encode(entry.title))
-        except Exception as err:
-            print(err)
-    # producer.flush()
-    p.flush()
+    
+    if rss_feed_URL is not None:
+        news_feed = feedparser.parse(rss_feed_URL.decode('ascii'))
+        for entry in news_feed.entries:
+            try:
+                parsed_date = parser.parse(entry.published, tzinfos=tzinfos)
+                parsed_utc = parsed_date.astimezone(UTC).replace(tzinfo=None)
+                now_time = datetime.utcnow()
+                diff = now_time - parsed_utc
+                if diff.days == 0 and entry.title != "object has no attribute 'published'":
+                    print(entry.title)
+                    p.produce('article_title', entry.title.encode('utf-8'))
+                    # producer.send('article_title', str.encode(entry.title))
+            except Exception as err:
+                print(err)
+        # producer.flush()
+        p.flush()
     
     # try:
     #     proxy = redis.get_item()
