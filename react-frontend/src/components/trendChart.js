@@ -4,7 +4,7 @@ import React, { useRef, useLayoutEffect } from "react";
 
 const TrendChart = ({ width, height, data, fromDate, toDate }) => {
   const ref = useRef();
-  const recWidth = 100;
+  // const recWidth = 100;
   const x = (d, i) => d.key; // given d in data, returns the (ordinal) x-value
   const y = (d) => d.value; // given d in data, returns the (quantitative) y-value
   let title; // given d in data, returns the title text
@@ -28,7 +28,7 @@ const TrendChart = ({ width, height, data, fromDate, toDate }) => {
     if (data !== undefined) {
       draw();
     }
-  }, [data]);
+  });
 
   const draw = () => {
     // Compute values.
