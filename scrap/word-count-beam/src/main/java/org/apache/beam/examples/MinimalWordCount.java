@@ -64,7 +64,7 @@ public class MinimalWordCount {
                         new SimpleFunction<KV<String, Long>, Document>() {
                             public Document apply(KV<String, Long> input) {
                                 return Document
-                                        .parse(String.format("{word : '%s', count: '%s', date: '%d'}", input.getKey(),
+                                        .parse(String.format("{word : '%s', count: '%d', date: '%d'}", input.getKey(),
                                                 input.getValue(), numberOfDays));
                             }
                         }))
