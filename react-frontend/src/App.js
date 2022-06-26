@@ -31,7 +31,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("http://0.0.0.0:8000/noun/")
+      .get("https://news-trend-tracking.herokuapp.com/noun/")
       .then((res) => {
         setWords(res.data.data[0]);
       })
