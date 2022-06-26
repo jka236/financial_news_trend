@@ -34,7 +34,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("https://news-trend-tracking.herokuapp.com/noun")
+      .get("https://news-trend-tracking.herokuapp.com/aggregated")
       // .get("http://localhost:8000/aggregated")
       .then((res) => {
         setLoading(false);

@@ -12,7 +12,12 @@ app.include_router(NounRouter, tags=["Noun"], prefix="/noun")
 app.include_router(AggregatedRouter, tags=["Aggregated"], prefix="/aggregated")
 
 
-origins = ["https://prismatic-zabaione-5bbfd9.netlify.app", "http://localhost:3000", "prismatic-zabaione-5bbfd9.netlify.app"]
+origins = origins = [
+    "https://news-trend.netlify.app",
+    "http://localhost:3000",
+    "news-trend.netlify.app",
+    "http://news-trend.netlify.app",
+]
 
 app.add_middleware(
     CORSMiddleware,
