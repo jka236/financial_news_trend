@@ -6,6 +6,7 @@ import spacy
 import os
 from dotenv import load_dotenv
 from os.path import join, dirname
+import datetime
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -19,6 +20,7 @@ client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
 database = client.rss_feed
 
 word_collection = database.get_collection("rss_feed_write")
+
 
 
 
@@ -53,3 +55,10 @@ async def add_word(word_data: dict) -> dict:
     word = await word_collection.insert_one(word_data)
     new_word = await word_collection.find_one({"_id": word.inserted_id})
     return word_helper(new_word)
+
+# Add a new word into to the database
+async def delete_old_word() -> None:
+    print("Clean up start...")
+    epoch_day = (datetime.datetime.utcnow() - datetime.datetime(1970,1,1)).days -7
+    word = await word_collection.delete_many({'date': {'$lt': epoch_day}})
+    return
