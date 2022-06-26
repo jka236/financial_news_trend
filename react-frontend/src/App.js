@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import TrendChart from "./components/trendChart";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
+import news_trend from "./asset/news_trend.png";
 
 function App() {
   const [words, setWords] = useState();
@@ -33,8 +34,8 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("https://news-trend-tracking.herokuapp.com/noun")
-      // .get("http://localhost:8000/noun")
+      // .get("https://news-trend-tracking.herokuapp.com/noun")
+      .get("http://localhost:8000/aggregated")
       .then((res) => {
         setLoading(false);
         setWords(res.data.data[0]);
@@ -75,6 +76,18 @@ function App() {
                 />
               )}
             </Box>
+            <div>
+              <h2>
+                Tech Stack{" "}
+                <a href="https://github.com/jka236/news_trend">Github</a>
+              </h2>
+
+              <img
+                src={news_trend}
+                alt="news_trend"
+                style={{ width: "100%" }}
+              />
+            </div>
           </Container>
         </main>
       </>
