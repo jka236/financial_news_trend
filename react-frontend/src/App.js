@@ -4,9 +4,11 @@ import Box from "@mui/material/Box";
 import React, { useEffect, useState } from "react";
 import TrendChart from "./components/trendChart";
 import axios from "axios";
+import { CircularProgress } from "@mui/material";
 
 function App() {
   const [words, setWords] = useState();
+  const [loading, setLoading] = useState(true);
 
   function formatDate(d) {
     var month = "" + (d.getMonth() + 1);
@@ -31,8 +33,10 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("https://news-trend-tracking.herokuapp.com/noun/")
+      .get("https://news-trend-tracking.herokuapp.com/noun")
+      // .get("http://localhost:8000/noun")
       .then((res) => {
+        setLoading(false);
         setWords(res.data.data[0]);
       })
       .catch((err) => console.log(err));
@@ -50,13 +54,26 @@ function App() {
               <Typography variant="h5" component="h1" gutterBottom>
                 From {today} To {weekAgo}
               </Typography>
-              <TrendChart
-                width={640}
-                height={400}
-                data={words}
-                fromDate={days - 7}
-                toDate={days}
-              />
+              {loading && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "50px",
+                  }}
+                >
+                  <CircularProgress />
+                </div>
+              )}
+              {!loading && (
+                <TrendChart
+                  width={640}
+                  height={400}
+                  data={words}
+                  fromDate={days - 7}
+                  toDate={days}
+                />
+              )}
             </Box>
           </Container>
         </main>
