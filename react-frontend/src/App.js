@@ -39,6 +39,8 @@ function App() {
       .then((res) => {
         setLoading(false);
         setWords(res.data.data[0]);
+        console.log('Data')
+        console.log(res.data.data[0])
       })
       .catch((err) => console.log(err));
   }, []);
