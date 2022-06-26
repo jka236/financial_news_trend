@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import * as d3Collection from "d3-collection";
-import React, { useRef } from "react";
+import React, { useRef, useLayoutEffect } from "react";
 
 const TrendChart = ({ width, height, data, fromDate, toDate }) => {
   const ref = useRef();
@@ -24,11 +24,11 @@ const TrendChart = ({ width, height, data, fromDate, toDate }) => {
   let yLabel = "word count"; // a label for the y-axis
   let color = "steelblue"; // bar fill color
 
-  // useLayoutEffect(() => {
-  //   if (data !== undefined) {
-  //     draw();
-  //   }
-  // });
+  useLayoutEffect(() => {
+    if (data !== undefined) {
+      draw();
+    }
+  });
 
   const draw = () => {
     // Compute values.
@@ -42,7 +42,7 @@ const TrendChart = ({ width, height, data, fromDate, toDate }) => {
     //   data.filter((point) => point.date >= fromDate && point.date <= toDate);
 
     // data = dataFilter(data, fromDate, toDate);
-    
+
     data = d3Collection
       .nest()
       .key((d) => d.word)
@@ -119,8 +119,6 @@ const TrendChart = ({ width, height, data, fromDate, toDate }) => {
       .attr("transform", `translate(0,${height - marginBottom})`)
       .call(xAxis);
   };
-  
-  draw()
 
   return (
     <div className="chart">
