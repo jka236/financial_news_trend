@@ -57,6 +57,9 @@ function App() {
               <Typography variant="h5" component="h1" gutterBottom>
                 From {weekAgo} To {today}
               </Typography>
+              <Typography variant="h6" component="h1" gutterBottom>
+                Please bear with a slow loading. This is on a free tier server
+              </Typography>
               {loading && (
                 <div
                   style={{
