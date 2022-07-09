@@ -65,7 +65,7 @@ async def add_word(word_data: dict) -> dict:
     return word_helper(new_word)
 
 
-# Add a new word into to the database
+# Delete an old data
 async def delete_old_word() -> None:
     print("Clean up start...")
     epoch_day = (datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)).days - 7

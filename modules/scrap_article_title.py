@@ -43,19 +43,7 @@ def scrap_article_title(headers_list, redis_config, redis_key, idx):
                 print(err)
         # producer.flush()
         p.flush()
-    
-    # try:
-    #     proxy = redis.get_item()
-    #     soup = soupify(rss_feed_URL, headers_list, "html.parser", proxy)
-    #     titles = soup.find_all('title')
-    #     title_list = list(set([title.text for title in titles]))
-    #     for title in title_list:
-    #         if redis.sadd_item(key='article_title', value=title) == 1:
-    #             print(title)
-    #             producer.send('article_title', str.encode(title))
-    #             producer.flush()
-    # except Exception as err:
-    #     print(err)
+
             
 def get_text(soup_with_tag):
     return soup_with_tag.text
