@@ -1,4 +1,5 @@
 Demo: https://news-trend.netlify.app
+Demo is not available as Heroku free tier is no longer supported
 
 # News Trend
 
