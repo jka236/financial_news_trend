@@ -21,7 +21,6 @@ def scrap_article_title(headers_list, redis_config, redis_key, idx):
     rss_feed_URL = redis.lpop_item(f'rss_feed_list_{idx}')
     redis.health_check()
     try:
-        # producer = KafkaProducer(bootstrap_servers='kafka:9092')
         p = Producer({'bootstrap.servers': 'kafka:9092'})
 
     except Exception as err:

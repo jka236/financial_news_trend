@@ -40,4 +40,4 @@ async def clean_up_data() -> None:
 @app.get("/")
 async def root():
     # delete_old_word()
-    return {"message": "Hello World"}
+    return {"server": "started"}

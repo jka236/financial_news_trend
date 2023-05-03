@@ -12,7 +12,7 @@ from server.models.word import (
 router = APIRouter()
 
 @router.get("/", response_description="Words retrieved")
-async def get_students():
+async def get_aggregated():
     words = await retrieve_aggregated_noun()
     if words:
         return ResponseModel(words, "Words data retrieved successfully")

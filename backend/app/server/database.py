@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from os.path import join, dirname
 import datetime
 from typing import List
+from functools import lru_cache
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -94,6 +95,7 @@ async def aggregate_word() -> None:
     word_collection.aggregate(pipeline).to_list(length=None)
     print("Done")
 
+@lru_cache
 async def retrieve_aggregated_noun() -> List[str]:
     words = []
     async for word in grouped_collection.find():

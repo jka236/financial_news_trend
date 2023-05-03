@@ -42,7 +42,6 @@ def create_dag(dag_id, rss_news, schedule_interval,idx):
         is_paused_upon_creation=False,
     ) as dag:
 
-        # t1, t2 and t3 are examples of tasks created by instantiating operators
         get_proxy_list = ProxyPoolOperator(
                                         task_id='getProxyList',
                                         proxy_list_URL="https://free-proxy-list.net",

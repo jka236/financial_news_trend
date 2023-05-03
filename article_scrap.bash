@@ -1,8 +1,8 @@
 #!/bin/bash
+export JAVA_HOME=`/usr/libexec/java_home -v 17.0.4.1`
+
 pwd
 docker-compose -f docker-compose.yml up -d
-
-sleep 1m
 
 cd /Users/jonghyeokkim/Desktop/Coding/financial_news_trend/scrap/word-count-beam
 

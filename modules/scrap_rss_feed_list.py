@@ -5,6 +5,7 @@ from random_headers_list import headers_list
 def scrap_rss_feed_list(list_URL, headers_list, redis_config, redis_key, idx):
     redis = RedisProxyClient(redis_config, redis_key)
     redis.health_check()
+    # remove potential bad data
     redis.remove_key(f'rss_feed_list_{idx}')
 
     try:
