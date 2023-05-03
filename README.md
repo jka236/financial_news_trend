@@ -1,8 +1,9 @@
-Demo: https://prismatic-zabaione-5bbfd9.netlify.app/
+Demo: https://news-trend.netlify.app   
+Demo is not available as Heroku free tier is no longer supported
 
-# Buzz Finder
+# News Trend
 
-This is a data engineering full stack project that consumes the daily news RSS and shows the top 5 most frequent keywords. 
+This is a data engineering full stack project that consumes the daily news RSS and shows the top 10 most frequent keywords. 
 
 <img width="1256" alt="image" src="https://user-images.githubusercontent.com/83562725/173284799-1b42a794-c50b-4277-8a13-6210cd2397d2.png">
 
@@ -23,5 +24,5 @@ Apache Beam is in charge of the data process. Ingested article titles are split 
 
 **Data Visualization**
 
-Processed data is stored in MongoDB. FastAPi+Next.js stack is fetching data from MongoDB and visualizing with D3.js
+Processed data is stored in MongoDB. FastAPi+React stack is fetching data from MongoDB and visualizing with D3.js
 
